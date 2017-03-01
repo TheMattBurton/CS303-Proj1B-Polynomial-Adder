@@ -1,4 +1,3 @@
-#include "ErrorClass.h"
 #include "Polynomial.h"
 #include <string>
 #include <sstream>
@@ -23,7 +22,7 @@ void Polynomial::createTerms(){
 	for (size_t pos = 0; pos < polyStringSize; pos++){ 
 		// check each character and edit string based on conditions, resulting in space-delimited coefficients & exponents		
 		if (inputPolynomial[pos] == '^' && inputPolynomial[pos - 1] != 'X')
-			throw ErrorClass("Incorrect input format detected. \n");
+			throw std::runtime_error("Incorrect input format detected. \n");
 		else if (inputPolynomial[pos] == 'X'
 			&& (pos == 0 || (pos > 0 && inputPolynomial.find_first_not_of("0123456789", pos - 1) == pos - 1))) {
 			inputPolynomial.insert(pos, "1");
@@ -63,7 +62,7 @@ void Polynomial::createTerms(){
 	inputPolynomial += " 0"; // pad string in case single integer entered as polynomial
 	
 	if (inputPolynomial.find_first_not_of("0123456789- ", 0) < inputPolynomial.size())
-		throw ErrorClass("Incorrect input format detected. \n");
+		throw std::runtime_error("Incorrect input format detected. \n");
 
 	stringstream ss(inputPolynomial);
 
@@ -78,7 +77,7 @@ void Polynomial::createTerms(){
 	}
 }
 
-void Polynomial::sortTerms(){
+void Polynomial::sortTerms(){ // Insertion Sort variant.  "OoO" = Out of Order
 	std::list<Term>::iterator location_iter = termsList.begin();
 	std::list<Term>::const_iterator location_prev_iter = termsList.begin();
 	std::list<Term>::iterator firstOoO_iter = termsList.begin();
@@ -100,7 +99,7 @@ void Polynomial::sortTerms(){
 				// continue until beginning is reached, or the correct spot in list has been found for out-of-order Term
 			} while (location_iter != termsList.begin() && *location_prev_iter < tempTerm);
 
-			*location_iter = tempTerm;
+			*location_iter = tempTerm; // put saved Term in order
 		}
 		++firstOoO_prev_iter;
 	}
